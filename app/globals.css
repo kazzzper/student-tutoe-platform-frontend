@@ -1,0 +1,188 @@
+@import 'tailwindcss';
+
+@theme inline {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  
+  /* Radii - Aether System */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+  
+  /* Colors - Aether Dynamics Deep Dark */
+  --colors-canvas: var(--canvas);
+  --colors-primary: var(--primary);
+  --colors-secondary: var(--secondary);
+  --colors-tertiary: var(--tertiary);
+  --colors-surface: var(--surface);
+  --colors-text-primary: var(--text-primary);
+  --colors-text-secondary: var(--text-secondary);
+  --colors-border: var(--border);
+  --colors-accent: var(--accent);
+}
+
+/* Aether Dynamics - Deep Black Dark Mode (Default) */
+:root {
+  color-scheme: dark;
+  
+  /* Primary palette */
+  --primary: #4B4BA0;
+  --secondary: #09090B;
+  --tertiary: #8F47AE;
+  --neutral: #09090B;
+  --canvas: #09090B;
+  --surface: #A1A1AA;
+  --text-primary: #52525B;
+  --text-secondary: #A1A1AA;
+  --border: #3F3F46;
+  --accent: #4B4BA0;
+  
+  /* Glass surfaces */
+  --surface-glass: rgba(20, 20, 28, 0.6);
+  --surface-glass-strong: rgba(25, 25, 35, 0.8);
+  --surface-border: 1px solid rgba(63, 63, 70, 0.5);
+  
+  /* Depth & Effects */
+  --blur-panel: blur(12px);
+  --blur-ambient: blur(40px);
+  
+  /* Shadows - Deep mode */
+  --shadow-inset: rgba(255, 255, 255, 0.03) 0px 0px 12px 0px inset, rgba(255, 255, 255, 0.02) 0px 2px 4px 0px inset;
+  --shadow-rest: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.6);
+  --shadow-pop: 0 20px 40px rgba(0, 0, 0, 0.7);
+  
+  /* Gradients */
+  --gradient-border: linear-gradient(135deg, rgba(75, 75, 160, 0.5), rgba(143, 71, 174, 0.3));
+}
+
+@layer base {
+  html {
+    @apply font-sans;
+  }
+  
+  body {
+    background-color: var(--canvas);
+    color: var(--text-primary);
+    @apply transition-colors duration-200;
+  }
+}
+
+/* Glass card base utility - Aether Dynamics */
+@layer components {
+  .glass-card {
+    border-radius: 16px;
+    background-color: rgba(20, 20, 28, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(63, 63, 70, 0.5);
+    box-shadow: var(--shadow-inset), var(--shadow-rest);
+  }
+  
+  .glass-card-strong {
+    border-radius: 16px;
+    background-color: rgba(25, 25, 35, 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(63, 63, 70, 0.6);
+    box-shadow: var(--shadow-inset), var(--shadow-rest);
+  }
+  
+  .btn-primary {
+    border-radius: 999px;
+    background-color: var(--primary);
+    color: #F4F4F5;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 150ms ease;
+    box-shadow: var(--shadow-rest);
+    border: none;
+    cursor: pointer;
+  }
+  
+  .btn-primary:hover {
+    background-color: #5a5ab0;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-hover);
+  }
+  
+  .btn-primary:active {
+    transform: scale(0.98);
+  }
+  
+  .btn-secondary {
+    border-radius: 999px;
+    color: #F4F4F5;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 150ms ease;
+    background-color: rgba(20, 20, 28, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(63, 63, 70, 0.5);
+    box-shadow: var(--shadow-inset), var(--shadow-rest);
+    cursor: pointer;
+  }
+  
+  .btn-secondary:hover {
+    background-color: rgba(30, 30, 40, 0.8);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-hover);
+  }
+  
+  .pulse-glyph {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  
+  .pulse-glyph-bar {
+    width: 2px;
+    border-radius: 2px;
+    transition: all;
+    animation: pulse-breathe 1.2s ease-in-out infinite;
+  }
+  
+  .pulse-glyph-bar-1 {
+    height: 0.25rem;
+    animation-delay: 0s;
+  }
+  
+  .pulse-glyph-bar-2 {
+    height: 0.5rem;
+    animation-delay: 0.1s;
+  }
+  
+  .pulse-glyph-bar-3 {
+    height: 0.25rem;
+    animation-delay: 0.2s;
+  }
+}
+
+@keyframes pulse-breathe {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scaleY(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes drift {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(12px, 12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

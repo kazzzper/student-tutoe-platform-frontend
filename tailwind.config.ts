@@ -19,6 +19,30 @@ const config: Config = {
         },
         border: 'var(--border)',
         accent: 'var(--accent)',
+        'accent-lavender': {
+          'bg': 'var(--accent-lavender-bg)',
+          'fg': 'var(--accent-lavender-fg)',
+        },
+        'accent-sky': {
+          'bg': 'var(--accent-sky-bg)',
+          'fg': 'var(--accent-sky-fg)',
+        },
+        'accent-mint': {
+          'bg': 'var(--accent-mint-bg)',
+          'fg': 'var(--accent-mint-fg)',
+        },
+        'accent-sun': {
+          'bg': 'var(--accent-sun-bg)',
+          'fg': 'var(--accent-sun-fg)',
+        },
+        'accent-coral': {
+          'bg': 'var(--accent-coral-bg)',
+          'fg': 'var(--accent-coral-fg)',
+        },
+        'accent-tangerine': {
+          'bg': 'var(--accent-tangerine-bg)',
+          'fg': 'var(--accent-tangerine-fg)',
+        },
       },
       borderRadius: {
         'sm': '10px',

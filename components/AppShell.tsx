@@ -4,7 +4,7 @@ import { ReactNode, useState } from 'react'
 import Link from 'next/link'
 import { Button, IconButton } from '@/components/Button'
 import { Card } from '@/components/Badge'
-import { BookOpen, Menu, X, Home, BookMarked, Users, Calendar, User, Settings, LogOut, Bell, Mail, Search } from 'lucide-react'
+import { BookOpen, Menu, X, Home, BookMarked, Users, Calendar, User, Settings, LogOut, Bell, Mail, Search, Moon, Sun } from 'lucide-react'
 
 interface AppShellProps {
   children: ReactNode
@@ -43,18 +43,25 @@ export function AppShell({ children, currentPage, userRole = 'student' }: AppShe
 
   return (
     <div className="flex h-screen bg-canvas overflow-hidden">
-      {/* Sidebar */}
+      {/* Sidebar - Floating Squircle with Glassmorphism */}
       <aside
-        className={`fixed md:relative z-40 h-full glass-card-strong transition-all duration-250 flex flex-col
+        className={`fixed md:relative z-40 m-4 md:m-6 h-[calc(100vh-2rem)] md:h-[calc(100vh-3rem)] transition-all duration-300 flex flex-col
           ${sidebarOpen ? 'w-64' : sidebarCollapsed ? 'w-24' : 'w-64'}
           md:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-          border-r border-white/60 rounded-none md:rounded-r-[28px]`}
+          rounded-3xl border`}
+        style={{
+          borderRadius: '32px',
+          backgroundColor: 'var(--surface-glass)',
+          backdropFilter: 'var(--blur-panel)',
+          borderColor: 'var(--border)',
+          boxShadow: 'var(--shadow-rest)'
+        }}
       >
         {/* Logo */}
-        <div className="p-6 flex items-center justify-between border-b border-white/20">
+        <div className="p-6 flex items-center justify-between  border-border/30">
           {!sidebarCollapsed && (
-            <Link href="/" className="flex items-center gap-3 font-semibold">
-              <div className="w-8 h-8 bg-ink-900 rounded flex items-center justify-center">
+            <Link href="/" className="flex items-center gap-3 font-semibold text-text-primary">
+              <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
                 <BookOpen className="w-5 h-5 text-white" strokeWidth={2.5} />
               </div>
               <span>tutorly</span>
@@ -62,7 +69,7 @@ export function AppShell({ children, currentPage, userRole = 'student' }: AppShe
           )}
           <button
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className="hidden md:block text-ink-600 hover:text-ink-900"
+            className="hidden md:block text-text-secondary hover:text-text-primary transition-colors"
           >
             {sidebarCollapsed ? <Menu className="w-5 h-5" /> : <X className="w-5 h-5" />}
           </button>
@@ -70,18 +77,26 @@ export function AppShell({ children, currentPage, userRole = 'student' }: AppShe
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto px-3 py-6 space-y-2">
-          <p className={`text-xs font-semibold uppercase text-ink-400 px-3 mb-4 ${sidebarCollapsed ? 'hidden' : ''}`}>Main</p>
-          {currentNavItems.map((item) => {
+          <p className={`text-xs font-semibold uppercase text-text-secondary px-3 mb-4 ${sidebarCollapsed ? 'hidden' : ''}`}>Main</p>
+          {currentNavItems.map((item, idx) => {
             const isActive = currentPage === item.id
             const Icon = item.icon
+            const accentColors = [
+              'bg-accent-lavender-bg text-accent-lavender-fg',
+              'bg-accent-sky-bg text-accent-sky-fg',
+              'bg-accent-mint-bg text-accent-mint-fg',
+              'bg-accent-sun-bg text-accent-sun-fg',
+              'bg-accent-coral-bg text-accent-coral-fg',
+            ]
+            const accentClass = accentColors[idx % accentColors.length]
             return (
               <Link
                 key={item.id}
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-2.5 rounded-full transition-all h-10 ${
+                className={`flex items-center gap-3 px-4 py-2.5 rounded-full transition-all duration-200 h-10 ${
                   isActive
-                    ? 'bg-accent-lavender-bg text-accent-lavender-fg'
-                    : 'text-ink-600 hover:bg-white/30'
+                    ? accentClass
+                    : 'text-text-secondary hover:bg-surface-secondary/50 hover:text-text-primary'
                 }`}
                 title={sidebarCollapsed ? item.label : undefined}
               >
@@ -93,29 +108,33 @@ export function AppShell({ children, currentPage, userRole = 'student' }: AppShe
         </nav>
 
         {/* Settings & Account */}
-        <div className="border-t border-white/20 p-4 space-y-3">
+        <div className=" border-border/30 p-4 space-y-3">
           <Link
             href="/settings"
-            className={`flex items-center gap-3 px-4 py-2.5 rounded-full text-ink-600 hover:bg-white/30 transition-all h-10 ${
-              currentPage === 'settings' ? 'bg-accent-lavender-bg text-accent-lavender-fg' : ''
+            className={`flex items-center gap-3 px-4 py-2.5 rounded-full transition-all h-10 ${
+              currentPage === 'settings' 
+                ? 'bg-accent-sun-bg text-accent-sun-fg' 
+                : 'text-text-secondary hover:bg-surface/30'
             }`}
           >
             <Settings className="w-5 h-5 flex-shrink-0" strokeWidth={2} />
             {!sidebarCollapsed && <span className="text-sm font-medium">Settings</span>}
           </Link>
 
+
+
           {/* Account Card */}
           <div className={`glass-card p-3 flex items-center gap-2 ${sidebarCollapsed ? 'flex-col' : ''}`}>
-            <div className={`w-8 h-8 rounded-full bg-accent-lavender-bg flex-shrink-0 ${sidebarCollapsed ? '' : ''}`}></div>
+            <div className={`w-8 h-8 rounded-full bg-accent-coral-bg flex-shrink-0 ${sidebarCollapsed ? '' : ''}`}></div>
             {!sidebarCollapsed && (
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-ink-900 truncate">John Doe</p>
-                <p className="text-xs text-ink-400">{userRole}</p>
+                <p className="text-xs font-semibold text-text-primary truncate">John Doe</p>
+                <p className="text-xs text-text-secondary">{userRole}</p>
               </div>
             )}
           </div>
 
-          <button className={`w-full flex items-center gap-2 px-3 py-2 rounded-full text-ink-600 hover:bg-white/30 transition-all text-sm ${sidebarCollapsed ? 'justify-center' : ''}`}>
+          <button className={`w-full flex items-center gap-2 px-3 py-2 rounded-full text-text-secondary hover:bg-surface/30 transition-all text-sm ${sidebarCollapsed ? 'justify-center' : ''}`}>
             <LogOut className="w-4 h-4" strokeWidth={2} />
             {!sidebarCollapsed && <span>Sign out</span>}
           </button>
@@ -123,18 +142,26 @@ export function AppShell({ children, currentPage, userRole = 'student' }: AppShe
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Bar */}
-        <header className="glass-card sticky top-0 z-30 h-18 px-6 flex items-center justify-between border-b border-white/60 rounded-none md:rounded-bl-[28px]">
+      <div className="flex-1 flex flex-col min-w-0 p-4 md:p-6">
+        {/* Top Bar - Glassmorphism */}
+        <header 
+          className="sticky top-4 md:top-6 z-30 h-14 px-6 flex items-center justify-between rounded-2xl border transition-all duration-200"
+          style={{
+            backgroundColor: 'var(--surface-glass)',
+            backdropFilter: 'var(--blur-panel)',
+            borderColor: 'var(--border)',
+            boxShadow: 'var(--shadow-rest)'
+          }}
+        >
           <div className="flex items-center gap-4 flex-1 min-w-0">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="md:hidden text-ink-600 hover:text-ink-900"
+              className="md:hidden text-text-secondary hover:text-text-primary transition-colors"
             >
               <Menu className="w-6 h-6" strokeWidth={2} />
             </button>
-            <p className="text-sm text-ink-600 hidden sm:block">
-              tutorly <span className="text-ink-400">›</span> {currentPage}
+            <p className="text-sm text-text-secondary hidden sm:block">
+              tutorly <span className="text-border">›</span> {currentPage}
             </p>
           </div>
 
@@ -143,12 +170,31 @@ export function AppShell({ children, currentPage, userRole = 'student' }: AppShe
             <IconButton icon={<Search className="w-5 h-5" strokeWidth={2} />} label="Search" />
             <IconButton icon={<Bell className="w-5 h-5" strokeWidth={2} />} label="Notifications" />
             <IconButton icon={<Mail className="w-5 h-5" strokeWidth={2} />} label="Messages" />
+            <button
+              onClick={() => {
+                const isDark = document.documentElement.classList.contains('dark-mode')
+                if (isDark) {
+                  document.documentElement.classList.add('light-mode')
+                  document.documentElement.classList.remove('dark-mode')
+                  localStorage.setItem('tutorly-theme', 'light')
+                } else {
+                  document.documentElement.classList.add('dark-mode')
+                  document.documentElement.classList.remove('light-mode')
+                  localStorage.setItem('tutorly-theme', 'dark')
+                }
+              }}
+              className="p-2 rounded-full text-text-secondary hover:text-text-primary hover:bg-surface/30 transition-colors"
+              aria-label="Toggle theme"
+            >
+              <Moon className="w-4 h-4 dark-mode:hidden" strokeWidth={2} />
+              <Sun className="w-4 h-4 light-mode:hidden hidden dark-mode:block" strokeWidth={2} />
+            </button>
           </div>
         </header>
 
         {/* Page Content */}
         <main className="flex-1 overflow-y-auto">
-          <div className="p-6 md:p-8 max-w-7xl mx-auto">
+          <div className="max-w-7xl">
             {children}
           </div>
         </main>

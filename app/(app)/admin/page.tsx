@@ -5,6 +5,8 @@ import { Button } from '@/components/Button'
 import { Badge } from '@/components/Badge'
 import { Users, Zap, AlertCircle, TrendingUp } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 export default function AdminPage() {
   return (
     <div className="space-y-8">

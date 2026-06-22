@@ -2,11 +2,11 @@
 
 export const colors = {
   canvas: 'var(--canvas)',
-  inkLight: 'var(--ink-900)',
-  inkMed: 'var(--ink-600)',
-  inkSoft: 'var(--ink-400)',
-  inkVeryLight: 'var(--ink-200)',
-  
+  inkLight: 'var(--text-primary)',
+  inkMed: 'var(--text-secondary)',
+  inkSoft: 'var(--text-muted)',
+  inkVeryLight: 'var(--text-muted)',
+
   lavenderBg: 'var(--accent-lavender-bg)',
   lavenderFg: 'var(--accent-lavender-fg)',
   skyBg: 'var(--accent-sky-bg)',

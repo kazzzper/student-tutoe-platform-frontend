@@ -20,7 +20,10 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: 'light dark',
-  themeColor: '#14151a',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#111111' },
+    { media: '(prefers-color-scheme: dark)', color: '#FFFFFF' },
+  ],
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
@@ -33,10 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
-      <body className="font-sans antialiased transition-colors duration-200" style={{
-        backgroundColor: 'var(--canvas)',
-        color: 'var(--ink-900)'
-      }}>
+      <body className="font-sans antialiased transition-colors duration-200 bg-canvas text-text-primary">
         <Providers>
           {children}
         </Providers>

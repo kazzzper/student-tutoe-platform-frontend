@@ -2,80 +2,57 @@
 
 import { createContext, useContext, useEffect, useState } from 'react'
 
-type ThemeMode = 'light' | 'dark' | 'system'
+type ThemeMode = 'light' | 'dark'
 
 interface ThemeContextType {
-  mode: ThemeMode
-  setMode: (mode: ThemeMode) => void
-  isDark: boolean
+  theme: ThemeMode
+  setTheme: (theme: ThemeMode) => void
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [mode, setMode] = useState<ThemeMode>('system')
-  const [isDark, setIsDark] = useState(false)
+  const [theme, setThemeState] = useState<ThemeMode>('dark')
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
     // Load saved theme preference
     const saved = localStorage.getItem('tutorly-theme') as ThemeMode | null
     if (saved) {
-      setMode(saved)
+      setThemeState(saved)
+      applyTheme(saved)
+    } else {
+      // Check system preference
+      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+      const initialTheme: ThemeMode = isDark ? 'dark' : 'light'
+      setThemeState(initialTheme)
+      applyTheme(initialTheme)
     }
-    setMounted(true)
   }, [])
 
-  useEffect(() => {
-    if (!mounted) return
-
-    // Determine actual theme
-    let shouldBeDark = isDark
-    if (mode === 'system') {
-      shouldBeDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    } else {
-      shouldBeDark = mode === 'dark'
-    }
-
-    // Apply theme
-    if (shouldBeDark) {
+  const applyTheme = (newTheme: ThemeMode) => {
+    if (newTheme === 'dark') {
       document.documentElement.classList.add('dark-mode')
       document.documentElement.classList.remove('light-mode')
     } else {
       document.documentElement.classList.add('light-mode')
       document.documentElement.classList.remove('dark-mode')
     }
-
-    setIsDark(shouldBeDark)
-  }, [mode, mounted])
-
-  const handleSetMode = (newMode: ThemeMode) => {
-    setMode(newMode)
-    localStorage.setItem('tutorly-theme', newMode)
   }
 
-  // Listen for system theme changes
-  useEffect(() => {
-    if (!mounted || mode !== 'system') return
+  const handleSetTheme = (newTheme: ThemeMode) => {
+    setThemeState(newTheme)
+    localStorage.setItem('tutorly-theme', newTheme)
+    applyTheme(newTheme)
+  }
 
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    const handleChange = () => {
-      setIsDark(mediaQuery.matches)
-      if (mediaQuery.matches) {
-        document.documentElement.classList.add('dark-mode')
-        document.documentElement.classList.remove('light-mode')
-      } else {
-        document.documentElement.classList.add('light-mode')
-        document.documentElement.classList.remove('dark-mode')
-      }
-    }
-
-    mediaQuery.addEventListener('change', handleChange)
-    return () => mediaQuery.removeEventListener('change', handleChange)
-  }, [mode, mounted])
+  if (!mounted) {
+    return <>{children}</>
+  }
 
   return (
-    <ThemeContext.Provider value={{ mode, setMode: handleSetMode, isDark }}>
+    <ThemeContext.Provider value={{ theme, setTheme: handleSetTheme }}>
       {children}
     </ThemeContext.Provider>
   )

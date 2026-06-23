@@ -4,80 +4,91 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/Button'
 import { Input } from '@/components/Input'
-import { BookOpen, ArrowRight } from 'lucide-react'
+import { BookOpen, ArrowRight, Users, GraduationCap } from 'lucide-react'
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    password: '',
+    fullName:        '',
+    email:           '',
+    password:        '',
     confirmPassword: '',
-    agreeTerms: false,
+    role:            'student' as 'student' | 'tutor',
+    agreeTerms:      false,
   })
-  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [errors,  setErrors]  = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }))
+    setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const newErrors: Record<string, string> = {}
-
     if (!formData.fullName) newErrors.fullName = 'Name is required'
-    if (!formData.email) newErrors.email = 'Email is required'
+    if (!formData.email)    newErrors.email    = 'Email is required'
     if (!formData.password) newErrors.password = 'Password is required'
-    if (formData.password !== formData.confirmPassword) {
+    if (formData.password !== formData.confirmPassword)
       newErrors.confirmPassword = 'Passwords do not match'
-    }
-    if (!formData.agreeTerms) newErrors.agreeTerms = 'You must agree to the terms'
+    if (!formData.agreeTerms) newErrors.agreeTerms = 'You must accept the terms'
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      return
-    }
-
+    if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return }
     setLoading(true)
-    // TODO: API call to signup
-    setTimeout(() => {
-      setLoading(false)
-      // Redirect to onboarding
-    }, 1000)
+    setTimeout(() => setLoading(false), 1200)
   }
 
   return (
-    <div className="min-h-screen bg-canvas flex items-center justify-center px-4 py-12">
-      {/* Background blobs */}
-      <div className="fixed inset-0 pointer-events-none -z-10">
-        <div className="absolute top-0 left-0 w-96 h-96 rounded-full opacity-20" style={{
-          background: 'rgba(231, 224, 255, 0.4)',
-          filter: 'blur(120px)',
-        }}></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full opacity-15" style={{
-          background: 'rgba(217, 242, 228, 0.35)',
-          filter: 'blur(120px)',
-        }}></div>
+    <div className="min-h-screen bg-canvas flex items-center justify-center px-4 py-12 relative overflow-hidden">
+
+      {/* Ambient blobs */}
+      <div aria-hidden className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+        <div className="ambient-blob blob-primary w-96 h-96 -top-32 -left-32 opacity-70" />
+        <div className="ambient-blob blob-accent  w-80 h-80 bottom-0 -right-20 opacity-50" />
       </div>
 
-      <div className="w-full max-w-md space-y-8">
+      <div className="w-full max-w-md space-y-7">
+
         {/* Logo */}
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 bg-ink-900 rounded-lg flex items-center justify-center">
-            <BookOpen className="w-7 h-7 text-white" strokeWidth={2.5} />
+        <Link href="/" className="flex items-center gap-2.5 cursor-pointer w-fit mx-auto">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'var(--primary)' }}>
+            <BookOpen className="w-5 h-5 text-white" strokeWidth={2.5} />
           </div>
-          <h1 className="text-2xl font-bold text-ink-900">Create your account</h1>
-          <p className="text-center text-ink-600 text-sm">
-            Start your learning journey with Tutorly
-          </p>
+          <span className="font-heading text-xl font-bold text-text-primary">Tutorly</span>
+        </Link>
+
+        {/* Heading */}
+        <div className="text-center">
+          <h1 className="font-heading text-3xl font-bold text-text-primary tracking-tight">Create your account</h1>
+          <p className="text-text-secondary mt-2 text-sm">Start your learning journey today — it&apos;s free</p>
+        </div>
+
+        {/* Role selector */}
+        <div className="grid grid-cols-2 gap-3">
+          {([
+            { value: 'student', label: 'I&apos;m a Student', Icon: GraduationCap },
+            { value: 'tutor',   label: 'I&apos;m a Tutor',   Icon: Users },
+          ] as const).map(({ value, label, Icon }) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setFormData(p => ({ ...p, role: value }))}
+              className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 cursor-pointer transition-all duration-150"
+              style={{
+                background:   formData.role === value ? 'var(--primary-subtle)' : 'var(--surface)',
+                borderColor:  formData.role === value ? 'var(--primary)'        : 'var(--border)',
+                color:        formData.role === value ? 'var(--primary)'        : 'var(--text-secondary)',
+              }}
+            >
+              <Icon className="w-5 h-5" strokeWidth={2} />
+              <span className="text-sm font-semibold" dangerouslySetInnerHTML={{ __html: label }} />
+            </button>
+          ))}
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="glass-card p-8 space-y-5">
+        <form onSubmit={handleSubmit} className="surface-card p-7 space-y-4" noValidate>
           <Input
             label="Full Name"
             name="fullName"
@@ -87,7 +98,6 @@ export default function SignupPage() {
             onChange={handleChange}
             error={errors.fullName}
           />
-
           <Input
             label="Email Address"
             name="email"
@@ -97,7 +107,6 @@ export default function SignupPage() {
             onChange={handleChange}
             error={errors.email}
           />
-
           <Input
             label="Password"
             name="password"
@@ -106,9 +115,8 @@ export default function SignupPage() {
             value={formData.password}
             onChange={handleChange}
             error={errors.password}
-            helper="At least 8 characters"
+            helper="Minimum 8 characters"
           />
-
           <Input
             label="Confirm Password"
             name="confirmPassword"
@@ -119,36 +127,42 @@ export default function SignupPage() {
             error={errors.confirmPassword}
           />
 
-          {/* Terms checkbox */}
-          <div className="flex items-start gap-3 pt-2">
+          {/* Terms */}
+          <label className="flex items-start gap-3 cursor-pointer pt-1">
             <input
               type="checkbox"
               name="agreeTerms"
               checked={formData.agreeTerms}
               onChange={handleChange}
-              className="mt-1 w-4 h-4 rounded border-ink-200 accent-accent-lavender-fg cursor-pointer"
+              className="mt-0.5 w-4 h-4 rounded cursor-pointer"
+              style={{ accentColor: 'var(--primary)' }}
             />
-            <label className="text-xs text-ink-600">
-              I agree to the <a href="#" className="text-accent-lavender-fg font-medium hover:underline">Terms of Service</a> and <a href="#" className="text-accent-lavender-fg font-medium hover:underline">Privacy Policy</a>
-            </label>
-          </div>
-          {errors.agreeTerms && <p className="text-xs text-accent-coral-fg font-medium">{errors.agreeTerms}</p>}
+            <span className="text-xs text-text-secondary leading-relaxed">
+              I agree to the{' '}
+              <a href="#" className="font-semibold cursor-pointer" style={{ color: 'var(--primary)' }}>Terms of Service</a>
+              {' '}and{' '}
+              <a href="#" className="font-semibold cursor-pointer" style={{ color: 'var(--primary)' }}>Privacy Policy</a>
+            </span>
+          </label>
+          {errors.agreeTerms && (
+            <p className="text-xs font-semibold" style={{ color: 'var(--accent-coral-fg)' }}>{errors.agreeTerms}</p>
+          )}
 
           <Button size="lg" type="submit" loading={loading} className="w-full">
-            Create Account
+            {!loading && 'Create Account'}
             {!loading && <ArrowRight className="w-4 h-4" strokeWidth={2} />}
           </Button>
         </form>
 
         {/* Footer */}
-        <div className="text-center space-y-4">
-          <p className="text-sm text-ink-600">
+        <div className="text-center space-y-3">
+          <p className="text-sm text-text-secondary">
             Already have an account?{' '}
-            <Link href="/signin" className="font-medium text-accent-lavender-fg hover:underline">
+            <Link href="/signin" className="font-semibold cursor-pointer" style={{ color: 'var(--primary)' }}>
               Sign in
             </Link>
           </p>
-          <Link href="/" className="text-sm text-ink-400 hover:text-ink-600 transition-colors">
+          <Link href="/" className="block text-sm cursor-pointer" style={{ color: 'var(--text-muted)' }}>
             ← Back to home
           </Link>
         </div>

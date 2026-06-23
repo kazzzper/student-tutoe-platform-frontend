@@ -1,28 +1,35 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
+import { DM_Sans, Space_Grotesk } from 'next/font/google'
 import { Providers } from '@/components/Providers'
 import './globals.css'
 
-const inter = Inter({ 
+const dmSans = DM_Sans({
   subsets: ['latin'],
   variable: '--font-sans',
+  axes: ['opsz'],
+  display: 'swap',
+})
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-heading',
+  display: 'swap',
 })
 
 export const metadata: Metadata = {
-  title: 'Tutorly - Student & Tutor Matchmaking Platform',
-  description: 'Connect with elite educators through our premium learning infrastructure. No clutter, just world-class knowledge transfer.',
-  generator: 'v0.app',
+  title: 'Tutorly — Premium Student & Tutor Platform',
+  description: 'Connect with world-class educators through our premium learning infrastructure. Personalized sessions, expert tutors, measurable results.',
+  keywords: ['tutoring', 'education', 'online learning', 'tutors', 'students'],
   icons: {
     icon: '/favicon.svg',
-    apple: '/apple-icon.png',
   },
 }
 
 export const viewport: Viewport = {
-  colorScheme: 'light dark',
+  colorScheme: 'dark light',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#111111' },
-    { media: '(prefers-color-scheme: dark)', color: '#FFFFFF' },
+    { media: '(prefers-color-scheme: dark)',  color: '#07090F' },
+    { media: '(prefers-color-scheme: light)', color: '#F8FAFC' },
   ],
   width: 'device-width',
   initialScale: 1,
@@ -35,8 +42,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
-      <body className="font-sans antialiased transition-colors duration-200 bg-canvas text-text-primary">
+    <html
+      lang="en"
+      className={`${dmSans.variable} ${spaceGrotesk.variable}`}
+      suppressHydrationWarning
+    >
+      <body className="font-sans antialiased bg-canvas text-text-primary transition-colors duration-200">
         <Providers>
           {children}
         </Providers>

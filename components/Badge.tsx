@@ -11,40 +11,46 @@ interface BadgeProps {
   size?: 'sm' | 'md'
 }
 
-const colorMap = {
-  lavender: 'bg-accent-lavender-bg text-accent-lavender-fg',
-  sky: 'bg-accent-sky-bg text-accent-sky-fg',
-  mint: 'bg-accent-mint-bg text-accent-mint-fg',
-  sun: 'bg-accent-sun-bg text-accent-sun-fg',
-  coral: 'bg-accent-coral-bg text-accent-coral-fg',
-  tangerine: 'bg-accent-tangerine-bg text-accent-tangerine-fg',
+const COLOR_VARS: Record<AccentColor, { bg: string; fg: string }> = {
+  lavender:   { bg: 'var(--accent-lavender-bg)',   fg: 'var(--accent-lavender-fg)'   },
+  sky:        { bg: 'var(--accent-sky-bg)',         fg: 'var(--accent-sky-fg)'         },
+  mint:       { bg: 'var(--accent-mint-bg)',        fg: 'var(--accent-mint-fg)'        },
+  sun:        { bg: 'var(--accent-sun-bg)',         fg: 'var(--accent-sun-fg)'         },
+  coral:      { bg: 'var(--accent-coral-bg)',       fg: 'var(--accent-coral-fg)'       },
+  tangerine:  { bg: 'var(--accent-tangerine-bg)',   fg: 'var(--accent-tangerine-fg)'   },
 }
 
 export function Badge({ children, color = 'lavender', icon, size = 'md' }: BadgeProps) {
-  const sizeClasses = size === 'sm' ? 'px-3 py-1 text-xs' : 'px-4 py-1.5 text-sm'
-  
+  const { bg, fg } = COLOR_VARS[color]
+  const sizeClasses = size === 'sm' ? 'px-2.5 py-1 text-xs' : 'px-3.5 py-1.5 text-sm'
+
   return (
-    <div className={`rounded-full font-medium inline-flex items-center gap-2 ${colorMap[color]} ${sizeClasses}`}>
-      {icon && <span className="w-4 h-4">{icon}</span>}
+    <div
+      className={`rounded-full font-semibold inline-flex items-center gap-1.5 ${sizeClasses}`}
+      style={{ background: bg, color: fg }}
+    >
+      {icon && <span className="w-3.5 h-3.5 flex-shrink-0">{icon}</span>}
       {children}
     </div>
   )
 }
 
 interface CardProps {
-  children: ReactNode
+  children:   ReactNode
   className?: string
-  strong?: boolean
-  hover?: boolean
+  strong?:    boolean
+  hover?:     boolean
+  onClick?:   () => void
 }
 
-export function Card({ children, className = '', strong = false, hover = false }: CardProps) {
+export function Card({ children, className = '', strong = false, hover = false, onClick }: CardProps) {
   return (
     <div
+      onClick={onClick}
       className={`
-        ${strong ? 'glass-card-strong' : 'glass-card'}
-        ${hover ? 'hover:shadow-[var(--shadow-hover)] hover:scale-[1.012] transition-all duration-180 cursor-pointer' : ''}
-        p-5 ${className}
+        ${strong ? 'glass-card-strong' : 'surface-card'}
+        ${hover ? 'hover:-translate-y-0.5 transition-all duration-150 cursor-pointer' : ''}
+        ${className}
       `}
     >
       {children}

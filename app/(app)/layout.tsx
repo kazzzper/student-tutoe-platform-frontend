@@ -13,28 +13,23 @@ export default function AppLayout({
   const pathname = usePathname()
   
   // Extract page name from pathname
-  const getPageName = (path: string) => {
+  // Returns the nav item id — AppShell compares currentPage === item.id
+  const getPageId = (path: string): string => {
     const segments = path.split('/')
-    const lastSegment = segments[segments.length - 1]
-    
-    const pageNames: Record<string, string> = {
-      'dashboard': 'Overview',
-      'feed': 'Feed',
-      'tutors': 'Find Tutors',
-      'profile': 'Profile',
-      'schedules': 'Schedule',
-      'students': 'My Students',
-      'settings': 'Settings',
-      'admin': 'Admin',
-    }
-    
-    return pageNames[lastSegment] || 'Dashboard'
+    return segments[segments.length - 1] || 'dashboard'
   }
 
-  const currentPage = getPageName(pathname)
+  const getUserRole = (path: string): 'student' | 'tutor' | 'admin' => {
+    if (path.includes('tutor-dashboard') || path.includes('students')) return 'tutor'
+    if (path.includes('admin')) return 'admin'
+    return 'student'
+  }
+
+  const currentPage = getPageId(pathname)
+  const userRole    = getUserRole(pathname)
 
   return (
-    <AppShell currentPage={currentPage} userRole="student">
+    <AppShell currentPage={currentPage} userRole={userRole}>
       {children}
     </AppShell>
   )
